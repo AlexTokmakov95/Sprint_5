@@ -1,0 +1,46 @@
+import random
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+
+driver = webdriver.Chrome()
+
+driver.get("https://stellarburgers.education-services.ru/")
+initial_url = driver.current_url
+
+driver.find_element(By.XPATH, "//button[text()='Войти в аккаунт']").click()
+driver.find_element(By.CSS_SELECTOR, ".Auth_link__1fOlj").click()
+
+driver.find_element(By.XPATH, "//fieldset[1]//input").send_keys("Александр")
+new_title = f"{random.randint(100, 999)}@ya.ru"
+new_password = random.randint(100000, 999999)
+driver.find_element(By.XPATH, "//fieldset[2]//input").send_keys(new_title)
+driver.find_element(By.XPATH, "//fieldset[3]//input").send_keys(new_password)
+
+driver.find_element(By.CSS_SELECTOR, ".button_button__33qZ0").click()
+
+WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "App_componentContainer__2JC2W")))
+
+final_url = driver.current_url
+
+assert final_url != initial_url
+
+driver.quit()
+
+driver = webdriver.Chrome()
+
+driver.get("https://stellarburgers.education-services.ru/")
+
+driver.find_element(By.XPATH, "//button[text()='Войти в аккаунт']").click()
+initial_url = driver.current_url
+
+driver.find_element(By.XPATH, "//fieldset[1]//input").send_keys("Alex_Tokmakov_43_357@yandex.ru")
+driver.find_element(By.XPATH, "//fieldset[2]//input").send_keys("333333")
+
+WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, "App_componentContainer__2JC2W")))
+
+final_url = driver.current_url
+
+assert final_url == initial_url
